@@ -1,40 +1,57 @@
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
+import bodyParser from "body-parser";
+import fetch from "node-fetch";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+const PORT = process.env.PORT || 10000;
 
-// API endpoint
+app.use(cors());
+app.use(bodyParser.json());
+
+// ✅ Test endpoint
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running on Render!");
+});
+
+// ✅ Chat endpoint
 app.post("/api/chat", async (req, res) => {
   try {
-    const userMessage = req.body.message || "";
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
+    }
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: userMessage }],
-      }),
+        messages: [{ role: "user", content: message }]
+      })
     });
 
     const data = await response.json();
 
-    res.json({ reply: data.choices?.[0]?.message?.content || "⚠️ No reply" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "❌ Server error" });
+    if (data.error) {
+      return res.status(500).json({ error: data.error.message });
+    }
+
+    res.json({ reply: data.choices[0].message.content });
+
+  } catch (error) {
+    console.error("❌ Error in /api/chat:", error);
+    res.status(500).json({ error: "Something went wrong" });
   }
 });
 
-// Render uses PORT env variable
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("✅ Server running on " + PORT));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
