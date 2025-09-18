@@ -1,43 +1,55 @@
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 10000;
+const HF_API_KEY = process.env.HF_API_KEY; // المفتاح تاعك من Hugging Face
+const HF_MODEL = "facebook/blenderbot-400M-distill"; // موديل محادثة مجاني
 
-// API endpoint
 app.post("/api/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/gpt2", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.HF_API_KEY}`, // المفتاح تاعك من Hugging Face
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        inputs: userMessage
-      })
-    });
+    // ✅ نزيدو prompt أوضح
+    const prompt = `أنت مساعد دعم تقني ودود. 
+    جاوب المستخدم بالعربية بإيجاز ونقاط واضحة. 
+    المستخدم قال: "${userMessage}"`;
+
+    const response = await fetch(
+      `https://api-inference.huggingface.co/models/${HF_MODEL}`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${HF_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inputs: prompt,
+        }),
+      }
+    );
 
     const data = await response.json();
 
-    // تنسيق الرد
-    res.json({
-      reply: `👋 أهلاً! هذا رد فريق الدعم:\n\n${data[0]?.generated_text || "عذراً، ما قدرناش نولدو رد."}`
-    });
+    let reply =
+      data && data.length > 0 && data[0].generated_text
+        ? data[0].generated_text
+        : "⚠️ الخدمة مشغولة حالياً، حاول مرة أخرى بعد لحظات.";
 
+    res.json({ reply });
   } catch (error) {
-    console.error("❌ خطأ:", error);
-    res.status(500).json({ error: "مشكلة في الخادم 🚨" });
+    console.error("خطأ في السيرفر:", error);
+    res.status(500).json({
+      error: "⚠️ خطأ في الخادم، يرجى المحاولة لاحقاً.",
+    });
   }
 });
 
-// تشغيل السيرفر
-app.listen(PORT, () => {
-  console.log(`🚀 الخادم يعمل على المنفذ ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
