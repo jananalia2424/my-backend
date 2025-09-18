@@ -1,51 +1,44 @@
-// server.js
 import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// test endpoint
-app.get("/", (req, res) => {
-  res.json({ message: "✅ Backend is running on Render!" });
-});
-
-// chat endpoint
+// 📌 هذي هي الروت تاع /api/chat
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message } = req.body;
-    if (!message) return res.status(400).json({ error: "Message is required" });
+    const userMessage = req.body.message;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    // ✅ استدعاء API تاع Hugging Face
+    const response = await fetch("https://api-inference.huggingface.co/models/gpt2", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer $"Authorization": "Bearer hf_xxxxxxxx",
-
+        "Authorization": `Bearer ${process.env.HF_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: message }]
-      })
+      body: JSON.stringify({ inputs: userMessage })
     });
 
     const data = await response.json();
-    if (data.error) return res.status(500).json({ error: data.error.message });
 
-    const reply = data.choices?.[0]?.message?.content ?? "No reply";
+    // 📌 نسترجعو الرد
+    let reply = "ما قدرتش نفهم 😅";
+    if (Array.isArray(data) && data[0]?.generated_text) {
+      reply = data[0].generated_text;
+    }
+
     res.json({ reply });
-  } catch (err) {
-    console.error("❌ /api/chat error:", err);
-    res.status(500).json({ error: "Server error" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "حدث خطأ في الخادم" });
   }
 });
 
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 الخادم يعمل على المنفذ ${PORT}`);
+});
