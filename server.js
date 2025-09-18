@@ -15,7 +15,6 @@ app.use(bodyParser.json());
 
 // test endpoint
 app.get("/", (req, res) => {
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.json({ message: "✅ Backend is running on Render!" });
 });
 
@@ -41,7 +40,6 @@ app.post("/api/chat", async (req, res) => {
     if (data.error) return res.status(500).json({ error: data.error.message });
 
     const reply = data.choices?.[0]?.message?.content ?? "No reply";
-    res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.json({ reply });
   } catch (err) {
     console.error("❌ /api/chat error:", err);
