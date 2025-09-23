@@ -1,7 +1,7 @@
 {
-  "name": "jananalia-project",
+  "name": "ma-bqitch-n3awed",
   "version": "1.0.0",
-  "description": "سيرفر Express مربوط بواجهة HTML وشات GPT",
+  "description": "مشروع شات GPT مع واجهة HTML مخصصة",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "janan",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
