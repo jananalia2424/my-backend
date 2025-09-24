@@ -1,8 +1,16 @@
 {
-  "name": "امي العزيزة",
+  "name": "جميلة 01",
   "version": "1.0.0",
   "description": "ChatGPT API project",
+  "type": "module",
   "main": "server.js",
-  "scripts": { "start": "node server.js" },
-  "dependencies": { "cors": "^2.8.5", "dotenv": "^17.2.2", "express": "^5.1.0", "openai": "^5.23.0" }
+  "scripts": { 
+    "start": "node server.js" 
+  },
+  "dependencies": { 
+    "cors": "^2.8.5", 
+    "dotenv": "^17.2.2", 
+    "express": "^5.1.0", 
+    "openai": "^5.23.0" 
+  }
 }
