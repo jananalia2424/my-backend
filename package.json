@@ -2,6 +2,7 @@
   "name": "جميلة01",
   "version": "1.0.0",
   "description": "مشروع جميلة 01 مع ChatGPT وRender Server - نسخة Live كاملة",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
