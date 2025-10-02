@@ -1,25 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-<<<<<<< HEAD
-// ?????? ??? ???? ?????????
+// جلب جميع البوستات
 router.get('/', (req, res) => {
-    res.json([]);
+    res.json([]); // يرجع مصفوفة فارغة مؤقتًا
 });
 
-// ????? ????? ????
+// إنشاء بوست جديد
 router.post('/', (req, res) => {
     res.json({ message: 'Post created' });
-=======
-// ????? ????? ????
-router.post('/', (req, res) => {
-    res.send('Create post endpoint');
-});
-
-// ??? ?? ?????????
-router.get('/', (req, res) => {
-    res.send('Get posts endpoint');
->>>>>>> 3998e0d85f5ec3111171ee9cbee6bf86c1cd271a
 });
 
 module.exports = router;
