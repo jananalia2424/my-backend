@@ -21,6 +21,11 @@ try {
   console.error("⚠️ خطأ في تحميل الراوتات:", err.message);
 }
 
+// ✅ Route افتراضي للـ backend فقط
+app.get("/", (req, res) => {
+  res.json({ message: "✅ Backend is running correctly!" });
+});
+
 // ✅ Serve React frontend (if exists)
 if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "build");
