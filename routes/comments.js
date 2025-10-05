@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-// ✅ جلب جميع التعليقات
+/* -----------------------------------
+   ✅ جلب جميع التعليقات
+----------------------------------- */
 router.get("/", (req, res) => {
   res.json([
     { id: 1, postId: 1, content: "Great post!" },
@@ -9,7 +11,9 @@ router.get("/", (req, res) => {
   ]);
 });
 
-// ✅ جلب التعليقات الخاصة بمنشور معين
+/* -----------------------------------
+   ✅ جلب التعليقات الخاصة بمنشور معيّن
+----------------------------------- */
 router.get("/:postId", (req, res) => {
   const postId = req.params.postId;
   res.json({
@@ -22,7 +26,9 @@ router.get("/:postId", (req, res) => {
   });
 });
 
-// ✅ إنشاء تعليق جديد
+/* -----------------------------------
+   ✅ إنشاء تعليق جديد
+----------------------------------- */
 router.post("/", (req, res) => {
   const { postId, content } = req.body;
   res.json({
