@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 
 const app = express();
 
@@ -37,18 +36,14 @@ app.get("/", (req, res) => {
 });
 
 /* -----------------------------------
-   ✅ إعدادات التشغيل في وضع الإنتاج (Render أو GitHub Pages)
+   ✅ معالجة أي مسار غير معروف (بدون واجهة React)
 ----------------------------------- */
-if (process.env.NODE_ENV === "production") {
-  const buildPath = path.join(__dirname, "../frontend/build");
-
-  app.use(express.static(buildPath));
-
-  // أي طلب غير معروف يعيد واجهة React
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"));
+app.get("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "❌ Page not found — this server runs backend API only.",
   });
-}
+});
 
 /* -----------------------------------
    ✅ تشغيل السيرفر
