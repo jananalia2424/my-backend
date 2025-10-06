@@ -4,11 +4,15 @@ const path = require("path");
 
 const app = express();
 
-// ✅ Middleware
+/* -----------------------------------
+   ✅ الإعدادات الأساسية
+----------------------------------- */
 app.use(cors());
 app.use(express.json());
 
-// ✅ Routes
+/* -----------------------------------
+   ✅ تحميل الراوتات (Auth / Posts / Comments)
+----------------------------------- */
 try {
   const authRoutes = require("./routes/auth");
   const postRoutes = require("./routes/posts");
@@ -18,26 +22,39 @@ try {
   app.use("/api/posts", postRoutes);
   app.use("/api/comments", commentRoutes);
 } catch (err) {
-  console.error("⚠️ خطأ في تحميل الراوتات:", err.message);
+  console.error("⚠️ خطأ أثناء تحميل أحد ملفات الراوت:", err.message);
 }
 
-// ✅ Route افتراضي للـ backend فقط
+/* -----------------------------------
+   ✅ اختبار عمل السيرفر
+----------------------------------- */
 app.get("/", (req, res) => {
-  res.json({ message: "✅ Backend is running correctly!" });
+  res.json({
+    success: true,
+    message: "✅ Backend is running correctly!",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// ✅ Serve React frontend (if exists)
+/* -----------------------------------
+   ✅ إعدادات التشغيل في وضع الإنتاج (Render أو GitHub Pages)
+----------------------------------- */
 if (process.env.NODE_ENV === "production") {
-  const buildPath = path.join(__dirname, "build");
+  const buildPath = path.join(__dirname, "../frontend/build");
+
   app.use(express.static(buildPath));
 
+  // أي طلب غير معروف يعيد واجهة React
   app.get("*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
 }
 
-// ✅ Port
+/* -----------------------------------
+   ✅ تشغيل السيرفر
+----------------------------------- */
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running successfully on port ${PORT}`);
 });
