@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -25,31 +26,34 @@ try {
 }
 
 /* -----------------------------------
-   ✅ اختبار عمل السيرفر
+   ✅ الصفحة الرئيسية (افتراضية)
 ----------------------------------- */
 app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "✅ Backend is running correctly!",
-    timestamp: new Date().toISOString(),
-  });
-});
-
-/* -----------------------------------
-   ✅ معالجة أي مسار غير معروف (بدون واجهة React)
------------------------------------ */
-app.get("*", (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "❌ Page not found — this server runs backend API only.",
-  });
-});
-
-/* -----------------------------------
-   ✅ تشغيل السيرفر
------------------------------------ */
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running successfully on port ${PORT}`);
-});
+  res.send(`
+    <html>
+      <head>
+        <title>🚀 Backend API - Social App</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6fa;
+            text-align: center;
+            margin-top: 100px;
+            color: #2f3640;
+          }
+          h1 { color: #44bd32; }
+          a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #273c75;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          a:hover { background-color: #40739e; }
+        </style>
+      </head>
+      <body>
+        <h1>✅ Backend API is running successfully!</h1>
+        <p>Welcome to the <strong>Social App Backend</strong> 🚀
